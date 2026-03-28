@@ -1,0 +1,15 @@
+C:\Users\adity\Projects\Alakazam\src\main\java\com\project\core\Fingerprint.java
+C:\Users\adity\Projects\Alakazam\src\main\java\com\project\core\MatchResult.java
+C:\Users\adity\Projects\Alakazam\src\main\java\com\project\database\MediaDatabase.java
+C:\Users\adity\Projects\Alakazam\src\main\java\com\project\fingerprint\Fingerprintable.java
+C:\Users\adity\Projects\Alakazam\src\main\java\com\project\fingerprint\FingerprintStrategy.java
+C:\Users\adity\Projects\Alakazam\src\main\java\com\project\fingerprint\SimpleAmplitudeStrategy.java
+C:\Users\adity\Projects\Alakazam\src\main\java\com\project\Main.java
+C:\Users\adity\Projects\Alakazam\src\main\java\com\project\matching\Matcher.java
+C:\Users\adity\Projects\Alakazam\src\main\java\com\project\matching\MatchStrategy.java
+C:\Users\adity\Projects\Alakazam\src\main\java\com\project\matching\SimilarityMatchStrategy.java
+C:\Users\adity\Projects\Alakazam\src\main\java\com\project\media\Audio.java
+C:\Users\adity\Projects\Alakazam\src\main\java\com\project\media\Media.java
+C:\Users\adity\Projects\Alakazam\src\main\java\com\project\media\Video.java
+C:\Users\adity\Projects\Alakazam\src\main\java\com\project\TestCV.java
+C:\Users\adity\Projects\Alakazam\src\main\java\com\project\utils\AudioReader.java
