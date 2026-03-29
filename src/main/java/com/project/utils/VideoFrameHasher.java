@@ -14,8 +14,15 @@ public class VideoFrameHasher {
     private final OpenCVFrameConverter.ToMat frameConverter = new OpenCVFrameConverter.ToMat();
     private final PHash pHash = PHash.create();
 
-    public long hashFrame (BufferedImage image) {
+    public long hashImage(BufferedImage image) {
         Frame frame = imageConverter.getFrame(image); //convert image to frame
+        Mat mat = frameConverter.convert(frame); //convert frame to mat
+        Mat hash = new Mat();
+        pHash.compute(mat, hash);
+        return matToLong(hash);
+    }
+
+    public long hashFrame(Frame frame) {
         Mat mat = frameConverter.convert(frame); //convert frame to mat
         Mat hash = new Mat();
         pHash.compute(mat, hash);

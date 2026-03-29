@@ -37,6 +37,25 @@ public class VideoFrameGrabber {
         }
     }
 
+    //grab the frame at a certain timestamp (in microseconds)
+    public Frame grabFrameAtTimestamp(long timestamp) {
+        try (FFmpegFrameGrabber grabber = new FFmpegFrameGrabber(VIDEO_PATH)) {
+            grabber.start();
+
+            grabber.setTimestamp(timestamp);
+
+            Frame frame = grabber.grabImage();
+                System.err.println("No frame grabbed.");
+
+            return  frame;
+
+        } catch (FrameGrabber.Exception e) {
+            System.out.println("Error grabbing frame: " + e.getMessage());
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     //grab the frame at a certain timestamp (in microseconds) and returns a converted image
     public BufferedImage grabFrameAtTimestampToImage(long timestamp) {
         try (FFmpegFrameGrabber grabber = new FFmpegFrameGrabber(VIDEO_PATH)) {
