@@ -4,95 +4,99 @@ import org.bytedeco.javacv.FFmpegFrameGrabber;
 import org.bytedeco.javacv.Frame;
 import org.bytedeco.javacv.FrameGrabber;
 import org.bytedeco.javacv.Java2DFrameConverter;
-import org.bytedeco.opencv.opencv_img_hash.PHash;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 
 //grab and save frames to image files
-public class VideoFrameGrabber {
-    private static final String VIDEO_PATH = "assets/video/testVideo.mp4";
-    private static final String OUTPUT_PATH = "assets/frames/testVideoFrames/output.png";
+public class VideoFrameGrabber implements Closeable {
+    private final FFmpegFrameGrabber grabber;
+    private boolean started = false;
+    private final Java2DFrameConverter converter = new Java2DFrameConverter();
 
-    //grab first frame of a video and returns a converted image
-    public BufferedImage grabFrameToImage() {
-        try (FFmpegFrameGrabber grabber = new FFmpegFrameGrabber(VIDEO_PATH)) {
+    public VideoFrameGrabber(File video) {
+        grabber = new FFmpegFrameGrabber(video);
+    }
+
+    public VideoFrameGrabber(String videoPath) {
+        grabber = new FFmpegFrameGrabber(videoPath);
+    }
+
+    public void start() throws FFmpegFrameGrabber.Exception {
+        if (!started) {
             grabber.start();
-
-            Frame frame = grabber.grabImage();
-            if (frame == null) {
-                System.err.println("No frame grabbed.");
-                return null;
-            }
-
-            // Convert to BufferedImage BEFORE release — safe to pass around
-            Java2DFrameConverter converter = new Java2DFrameConverter();
-            return converter.getBufferedImage(frame);
-
-        } catch (Exception e) {
-            e.printStackTrace();
+            started = true;
+        }
+    }
+    public long getLengthInTime() throws FFmpegFrameGrabber.Exception {
+        start();
+        return grabber.getLengthInTime();
+    }
+    public Frame grabFrame() throws FFmpegFrameGrabber.Exception {
+        start();
+        Frame frame = grabber.grabImage();
+        if (frame == null) {
+            System.err.println("No frame grabbed.");
             return null;
         }
+
+        // Convert to BufferedImage BEFORE release — safe to pass around
+        return frame;
+    }
+
+    //grab first frame of a video and returns a converted image
+    public BufferedImage grabFrameToImage() throws FFmpegFrameGrabber.Exception {
+
+        // Convert to BufferedImage BEFORE release — safe to pass around
+        return converter.getBufferedImage(grabFrame());
     }
 
     //grab the frame at a certain timestamp (in microseconds)
-    public Frame grabFrameAtTimestamp(long timestamp) {
-        try (FFmpegFrameGrabber grabber = new FFmpegFrameGrabber(VIDEO_PATH)) {
-            grabber.start();
+    public Frame grabFrameAtTimestamp(long timestamp) throws FFmpegFrameGrabber.Exception {
+        start();
 
-            grabber.setTimestamp(timestamp);
+        grabber.setTimestamp(timestamp);
 
-            Frame frame = grabber.grabImage();
-                System.err.println("No frame grabbed.");
+        Frame frame = grabber.grabImage();
+        if (frame == null)
+            System.err.println("No frame grabbed.");
 
-            return  frame;
-
-        } catch (FrameGrabber.Exception e) {
-            System.out.println("Error grabbing frame: " + e.getMessage());
-            e.printStackTrace();
-            return null;
-        }
+        return frame;
     }
 
     //grab the frame at a certain timestamp (in microseconds) and returns a converted image
-    public BufferedImage grabFrameAtTimestampToImage(long timestamp) {
-        try (FFmpegFrameGrabber grabber = new FFmpegFrameGrabber(VIDEO_PATH)) {
-            grabber.start();
-
-            grabber.setTimestamp(timestamp);
-
-            Frame frame = grabber.grabImage();
-            if (frame == null) {
-                System.err.println("No frame grabbed.");
-                return null;
-            }
-
-            // Convert to BufferedImage BEFORE release — safe to pass around
-            Java2DFrameConverter converter = new Java2DFrameConverter();
-            return converter.getBufferedImage(frame);
-
-        } catch (FrameGrabber.Exception e) {
-            System.out.println("Error grabbing frame: " + e.getMessage());
-            e.printStackTrace();
-            return null;
-        }
+    public BufferedImage grabFrameAtTimestampToImage(long timestamp) throws FFmpegFrameGrabber.Exception {
+        return converter.getBufferedImage(grabFrameAtTimestamp(timestamp));
     }
 
     //saves the frame that is converted to image
-    public void saveImage(BufferedImage image) {
+    public void saveImage(BufferedImage image, String outputPath) {
         if (image == null) {
             System.err.println("Cannot save — image is null.");
             return;
         }
         try {
-            ImageIO.write(image, "png", new File(OUTPUT_PATH));
-            System.out.println("Frame saved to: " + OUTPUT_PATH);
+            ImageIO.write(image, "png", new File(outputPath));
+            System.out.println("Frame saved to: " + outputPath);
         } catch (IOException e) {
             System.out.println("Error saving image to file: " + e.getMessage());
             e.printStackTrace();
         }
     }
 
+    @Override
+    public void close() {
+        try {
+            if (started) {
+                grabber.stop();
+                grabber.release();
+                started = false;
+            }
+        } catch (FFmpegFrameGrabber.Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

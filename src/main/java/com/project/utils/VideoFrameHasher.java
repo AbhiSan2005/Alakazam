@@ -18,7 +18,7 @@ public class VideoFrameHasher {
         Frame frame = imageConverter.getFrame(image); //convert image to frame
         Mat mat = frameConverter.convert(frame); //convert frame to mat
         Mat hash = new Mat();
-        pHash.compute(mat, hash);
+        pHash.compute(mat, hash); //implement manual pHash later
         return matToLong(hash);
     }
 
