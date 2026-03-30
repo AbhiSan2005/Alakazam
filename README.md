@@ -1,6 +1,6 @@
 # Shazam-Clone
 S.Y. OOPS Mini Project
-
+```
 AudioRecognitionSystem/
 │
 ├── src/
@@ -44,5 +44,7 @@ AudioRecognitionSystem/
 │
 ├── diagrams/
 │   ├── class_diagram.drawio
+
+```
 │
 ├── README.md
