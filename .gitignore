@@ -1,0 +1,4 @@
+src/main/java/com/project/database/seeds/*.sql
+assets/video/*.mp4
+
+/target/classes/com/project/*.class

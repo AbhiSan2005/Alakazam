@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  alakazam-db:
+    image: postgres:15
+    container_name: alakazam-postgres
+    restart: always
+    environment:
+      POSTGRES_USER: alakazam
+      POSTGRES_PASSWORD: alakazam
+      POSTGRES_DB: alakazam_db
+    ports:
+      - "5433:5432"
+    volumes:
+      - alakazam-data:/var/lib/postgresql/data
+      - ./src/main/java/com/project/database/schemas:/docker-entrypoint-initdb.d
+
+volumes:
+  alakazam-data:
