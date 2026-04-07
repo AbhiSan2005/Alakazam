@@ -26,7 +26,7 @@ public class PHashStrategy implements FingerprintStrategy {
                 Frame frame = grabber.grabFrameAtTimestamp(i);
 //                System.out.print("Frame: " + ++cnt);
 //                System.out.println(" Hash: " + frameHasher.hashFrame(frame));
-                int timestampInSec = (int) i / 1_000_000;
+                int timestampInSec = (int) (i / 1_000_000);
                 frames.add(new FrameFingerprint(media.getId(), timestampInSec, frameHasher.hashFrame(frame), timestampInSec / 5));
             }
         } catch (FrameGrabber.Exception e) {
