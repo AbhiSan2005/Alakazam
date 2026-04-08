@@ -1,0 +1,318 @@
+<!doctype html>
+<html class="dark scroll-smooth" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Alakazam | Precision Video Recognition</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#ffffff",
+              surface: "#000000",
+              background: "#000000",
+              "on-surface": "#ffffff",
+              "on-surface-variant": "#a1a1af",
+              "outline-variant": "#262626",
+              "surface-container-low": "#0a0a0a",
+              "surface-container-lowest": "#000000",
+              "surface-container-highest": "#1a1a1a",
+            },
+            borderRadius: {
+              DEFAULT: "0.125rem",
+              lg: "0.25rem",
+              xl: "0.5rem",
+              full: "9999px",
+            },
+            fontFamily: {
+              headline: ["Inter"],
+              body: ["Inter"],
+              label: ["Inter"],
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: #000000;
+      }
+      .material-symbols-outlined {
+        font-variation-settings:
+          "FILL" 0,
+          "wght" 100,
+          "GRAD" 0,
+          "opsz" 24;
+      }
+      .milled-aluminum {
+        background: #ffffff;
+      }
+      .selection\:bg-primary ::selection {
+        background-color: #ffffff;
+        color: #000000;
+      }
+    </style>
+  </head>
+  <body
+    class="bg-black text-white selection:bg-white selection:text-black min-h-screen flex flex-col"
+  >
+    <!-- nav -->
+    <nav
+      class="fixed top-0 w-full z-50 bg-[#131315]/60 backdrop-blur-xl flex justify-between items-center px-8 h-20 w-full"
+    >
+      <a href="./code.html">
+        <div class="text-2xl font-black tracking-tighter text-white">
+          ALAKAZAM
+        </div>
+      </a>
+      <div class="hidden md:flex items-center space-x-8">
+        <!-- <a
+          class="font-['Inter'] font-semibold tracking-tight text-zinc-500 hover:text-zinc-200 transition-colors"
+          href="#"
+          >Discover</a
+        > -->
+        <a
+          class="font-['Inter'] font-semibold tracking-tight text-white hover:text-zinc-200 transition-colors"
+          href="#"
+          >How It Works?</a
+        >
+        <!-- <a
+          class="font-['Inter'] font-semibold tracking-tight text-zinc-500 hover:text-zinc-200 transition-colors"
+          href="#"
+          >Recents</a
+        > -->
+      </div>
+      <div class="flex items-center gap-4">
+        <span
+          class="material-symbols-outlined text-white text-2xl cursor-pointer hover:scale-95 duration-200"
+          data-icon="account_circle"
+          >account_circle</span
+        >
+      </div>
+    </nav>
+    <main class="flex-grow">
+      <!-- Focused Hero Section -->
+      <section class="max-w-[1440px] mx-auto px-8 py-20 mt-10">
+        <div class="flex flex-col items-center text-center mb-16">
+          <h1
+            class="text-4xl md:text-6xl font-medium tracking-tight text-white mb-4"
+            style=""
+          >
+            Recognize Movies
+          </h1>
+          <h1
+            class="text-on-surface-variant text-5xl tracking-tight font-normal"
+            style=""
+          >
+            Precision Recognition Engine
+          </h1>
+        </div>
+        <!-- Large, Clean Upload Area -->
+        <div class="max-w-4xl mx-auto">
+          <div
+            class="group relative aspect-[21/9] w-full bg-[#000000] border border-white/10 rounded-3xl flex flex-col items-center justify-center transition-all duration-300 hover:border-white/20 hover:bg-[#0a0a0a] cursor-pointer"
+          >
+            <div class="flex flex-col items-center">
+              <span
+                class="material-symbols-outlined text-7xl text-on-surface-variant group-hover:text-white transition-colors mb-2"
+                style=""
+                >upload_file</span
+              >
+              <p
+                class="font-['Inter'] text-5xl font-medium text-white mb-4"
+                style=""
+              >
+                Drop File
+              </p>
+              <p
+                class="text-on-surface-variant text-normal tracking-wide"
+                style=""
+              >
+                Support for MP4, MOV, WEBM (Max 500MB)
+              </p>
+            </div>
+            <div class="mt-8">
+              <form id="upload-form">
+                <input type="file" id="file-input" accept="video/*" />
+                <button
+                  class="bg-white px-10 py-3 rounded-full text-normal font-medium text-black hover:bg-neutral-200 transition-all"
+                  style=""
+                >
+                  Select file
+                </button>
+              </form>
+              <p id="status"></p>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- Top 3 Best Matches Section -->
+      <section id="top-match" class="hidden max-w-[1440px] mx-auto px-8 pb-32">
+        <div class="max-w-4xl mx-auto">
+          <div class="flex items-center gap-4 mb-10">
+            <h2 class="text-xs font-semibold text-on-surface-variant" style="">
+              Top Match
+            </h2>
+            <div class="h-px flex-grow bg-white/10"></div>
+          </div>
+          <div class="grid grid-cols-1 gap-4">
+            <!-- Match 1 -->
+            <a href="./movie.html">
+              <div
+                class="group flex items-center justify-between p-6 bg-[#0a0a0a] rounded-xl border border-white/10 hover:border-white/20 transition-all"
+              >
+                <div class="flex items-center gap-6">
+                  <div
+                    class="w-24 aspect-video rounded-lg overflow-hidden bg-[#1a1a1a]"
+                  >
+                    <img
+                      class="w-full h-full object-cover grayscale transition-all duration-500"
+                      data-alt="Inception"
+                      src="https://lh3.googleusercontent.com/aida-public/AB6AXuBINXgrs5l69-heeCzV3GnQFweFUlEsDtMO7n8gLQHTfRP5cu8bhpulqhsKDt2T6JozcQ02ydEsreKzcDOt8ERhv4yzIo1865ZHclc21fWwIkHkYii7--8ftYhWg8qdPokjFaOb2ORrMaKnOC7OKXW-XjarYHMEUhZ3FPKezZ-pXdpHBH5f3Fz_PVvkC0KwtVqptkn0ULApz0f0-4wBHzeMEKY0FYyWfiDUvbRuUTaeoH32kEZT7-6qnry2bCT4w-sK5L0tqh9zHS8"
+                      style=""
+                    />
+                  </div>
+                  <div>
+                    <h3
+                      id="movie-title"
+                      class="text-lg font-bold text-white"
+                      style=""
+                    >
+                      No Match Found
+                    </h3>
+                    <p
+                      class="text-xs text-on-surface-variant font-light"
+                      style=""
+                    >
+                      Christopher Nolan • 2010
+                    </p>
+                  </div>
+                </div>
+                <div class="text-right">
+                  <div
+                    id="confidence"
+                    class="text-2xl font-bold text-white"
+                    style=""
+                  >
+                    0%
+                  </div>
+                  <div
+                    class="text-[10px] text-on-surface-variant font-medium"
+                    style=""
+                  >
+                    Confidence
+                  </div>
+                </div>
+              </div>
+            </a>
+            <!-- Match 2 -->
+            <!--            <div-->
+            <!--              class="group flex items-center justify-between p-6 bg-[#0a0a0a] rounded-xl border border-white/5 hover:border-white/20 transition-all"-->
+            <!--            >-->
+            <!--              <div class="flex items-center gap-6">-->
+            <!--                <div-->
+            <!--                  class="w-24 aspect-video rounded-lg overflow-hidden bg-[#1a1a1a]"-->
+            <!--                >-->
+            <!--                  <img-->
+            <!--                    class="w-full h-full object-cover grayscale transition-all duration-500"-->
+            <!--                    data-alt="Interstellar"-->
+            <!--                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuCb4eyzzLVNjqmqnRbEAIiCYqFfbT6xrk7QlBkRldn6_XDnYJR7rlLChD9bKCZoSlgKTiXrfZSqbe5Hshi7C_Bf_3jwFdbAWwzHn1ab36LiLY-UFQmChFRMEiqyjUfB_QEdoKj0AqSEPewMPRsUDDXHmgdaED0yj25QLJhYK-4SUPYvn1eY3b3-oDlPLgJ3aaOgeWJkqNEjTGdni1dgGP3mo6u1_1jCOmXw6RLutbak57_xTFWLgfv19pdpZ-tsWnYBlGtXxPIVdEc"-->
+            <!--                    style=""-->
+            <!--                  />-->
+            <!--                </div>-->
+            <!--                <div>-->
+            <!--                  <h3 class="text-lg font-bold text-white" style="">-->
+            <!--                    Interstellar-->
+            <!--                  </h3>-->
+            <!--                  <p-->
+            <!--                    class="text-xs text-on-surface-variant font-light"-->
+            <!--                    style=""-->
+            <!--                  >-->
+            <!--                    Christopher Nolan • 2014-->
+            <!--                  </p>-->
+            <!--                </div>-->
+            <!--              </div>-->
+            <!--              <div class="text-right">-->
+            <!--                <div class="text-2xl font-bold text-white" style="">82%</div>-->
+            <!--                <div-->
+            <!--                  class="text-[10px] text-on-surface-variant font-medium"-->
+            <!--                  style=""-->
+            <!--                >-->
+            <!--                  Confidence-->
+            <!--                </div>-->
+            <!--              </div>-->
+            <!--            </div>-->
+            <!-- Match 3 -->
+            <!--            <div-->
+            <!--              class="group flex items-center justify-between p-6 bg-[#0a0a0a] rounded-xl border border-white/5 hover:border-white/20 transition-all"-->
+            <!--            >-->
+            <!--              <div class="flex items-center gap-6">-->
+            <!--                <div-->
+            <!--                  class="w-24 aspect-video rounded-lg overflow-hidden bg-[#1a1a1a]"-->
+            <!--                >-->
+            <!--                  <img-->
+            <!--                    class="w-full h-full object-cover grayscale transition-all duration-500"-->
+            <!--                    data-alt="Tenet"-->
+            <!--                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuC4l7hC_noIi3gQvcmrR3jeRom5TllKbWbJ_Ar48nnrkVhrljgwmi7W3cJIdGSvlmaJw82QPgdnPy4NOItszwLy&#45;&#45;3L8mrwiPpY_2qvcyAVfWxKYE_a-4yz5eXOc55dxfdelXYKzWzphLr8cJnsKGQNkSTNuZGNrqbX095BDiO8TrH2x6O-ozWA44dYX6IFUaxepBG-cDqz6YKus8nuf0oCYV6JIhOXHRONb3OKSShHAekjea4B6OSKOu0ZmAFIS3qoF9BNdFQnn0c"-->
+            <!--                    style=""-->
+            <!--                  />-->
+            <!--                </div>-->
+            <!--                <div>-->
+            <!--                  <h3 class="text-lg font-bold text-white" style="">Tenet</h3>-->
+            <!--                  <p-->
+            <!--                    class="text-xs text-on-surface-variant font-light"-->
+            <!--                    style=""-->
+            <!--                  >-->
+            <!--                    Christopher Nolan • 2020-->
+            <!--                  </p>-->
+            <!--                </div>-->
+            <!--              </div>-->
+            <!--              <div class="text-right">-->
+            <!--                <div class="text-2xl font-bold text-white" style="">74%</div>-->
+            <!--                <div-->
+            <!--                  class="text-[10px] text-on-surface-variant font-medium"-->
+            <!--                  style=""-->
+            <!--                >-->
+            <!--                  Confidence-->
+            <!--                </div>-->
+            <!--              </div>-->
+            <!--            </div>-->
+          </div>
+        </div>
+      </section>
+    </main>
+    <!-- Simplified Footer -->
+    <footer class="bg-black w-full py-10 px-8 border-t border-white/10">
+      <div
+        class="flex flex-col md:flex-row justify-between items-center gap-6 max-w-[1440px] mx-auto"
+      >
+        <a href="./code.html">
+          <div class="text-xs font-black tracking-tighter text-white">
+            ALAKAZAM
+          </div>
+        </a>
+        <div class="flex gap-8">
+          <a
+            class="font-['Inter'] text-xs font-medium text-on-surface-variant hover:text-white transition-colors"
+            href="#"
+            style=""
+            >GitHub</a
+          >
+        </div>
+      </div>
+    </footer>
+    <script src="./script.js"></script>
+  </body>
+</html>

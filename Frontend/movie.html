@@ -1,0 +1,311 @@
+<!doctype html>
+
+<html class="dark" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "surface-container-lowest": "#0e0e10",
+              "on-tertiary-fixed-variant": "#e2e2e5",
+              "on-primary-fixed-variant": "#e2e2e2",
+              "surface-container-low": "#0a0a0a",
+              "surface-variant": "#353437",
+              error: "#ffb4ab",
+              tertiary: "#e2e2e5",
+              "on-background": "#e5e1e4",
+              "tertiary-fixed": "#5d5e61",
+              "inverse-primary": "#5d5f5f",
+              "tertiary-container": "#909193",
+              "on-error-container": "#ffdad6",
+              "on-surface-variant": "#c6c6c6",
+              "inverse-surface": "#e5e1e4",
+              "tertiary-fixed-dim": "#454749",
+              "primary-fixed-dim": "#454747",
+              "on-surface": "#ffffff",
+              "on-secondary-fixed-variant": "#3a3b43",
+              "on-secondary": "#1a1b22",
+              secondary: "#c6c5cf",
+              "on-primary": "#1a1c1c",
+              "surface-container-high": "#2a2a2c",
+              background: "#131315",
+              "surface-tint": "#c6c6c7",
+              "on-tertiary": "#1a1c1e",
+              "on-error": "#690005",
+              "secondary-fixed-dim": "#abaab4",
+              "on-tertiary-fixed": "#ffffff",
+              "on-secondary-fixed": "#1a1b22",
+              "surface-container-highest": "#353437",
+              outline: "#919191",
+              primary: "#ffffff",
+              "on-secondary-container": "#e3e1ec",
+              "inverse-on-surface": "#313032",
+              "secondary-container": "#46464e",
+              "surface-bright": "#39393b",
+              "error-container": "#93000a",
+              "on-tertiary-container": "#000000",
+              "primary-fixed": "#5d5f5f",
+              "outline-variant": "#474747",
+              "surface-container": "#201f22",
+              surface: "#131315",
+              "on-primary-fixed": "#ffffff",
+              "surface-dim": "#131315",
+              "secondary-fixed": "#c6c5cf",
+              "primary-container": "#d4d4d4",
+              "on-primary-container": "#000000",
+            },
+            borderRadius: {
+              DEFAULT: "0.125rem",
+              lg: "0.25rem",
+              xl: "0.5rem",
+              full: "0.75rem",
+            },
+            fontFamily: {
+              headline: ["Inter"],
+              body: ["Inter"],
+              label: ["Inter"],
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      body {
+        background-color: #000000;
+        color: #ffffff;
+        font-family: "Inter", sans-serif;
+      }
+      .material-symbols-outlined {
+        font-variation-settings:
+          "FILL" 0,
+          "wght" 400,
+          "GRAD" 0,
+          "opsz" 24;
+      }
+      .glass-panel {
+        background: rgba(53, 52, 55, 0.4);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+      }
+    </style>
+  </head>
+  <body class="bg-[#000000] text-on-surface antialiased">
+    <!-- TopNavBar -->
+    <nav
+      class="fixed top-0 w-full z-50 bg-[#131315]/60 backdrop-blur-xl flex justify-between items-center px-8 h-20 w-full"
+    >
+      <a href="./code.html">
+        <div class="text-2xl font-black tracking-tighter text-white">
+          ALAKAZAM
+        </div>
+      </a>
+      <div class="hidden md:flex items-center space-x-8">
+        <!-- <a
+          class="font-['Inter'] font-semibold tracking-tight text-zinc-500 hover:text-zinc-200 transition-colors"
+          href="#"
+          >Discover</a
+        > -->
+        <a
+          class="font-['Inter'] font-semibold tracking-tight text-white hover:text-zinc-200 transition-colors"
+          href="#"
+          >How It Works?</a
+        >
+        <!-- <a
+          class="font-['Inter'] font-semibold tracking-tight text-zinc-500 hover:text-zinc-200 transition-colors"
+          href="#"
+          >Recents</a
+        > -->
+      </div>
+      <div class="flex items-center gap-4">
+        <span
+          class="material-symbols-outlined text-white text-2xl cursor-pointer hover:scale-95 duration-200"
+          data-icon="account_circle"
+          >account_circle</span
+        >
+      </div>
+    </nav>
+    <main class="pt-20">
+      <!-- Hero Section -->
+      <section class="relative w-full h-[300px] overflow-hidden">
+        <div
+          class="absolute inset-0 bg-gradient-to-t from-[#000000] via-transparent to-transparent z-10"
+        ></div>
+        <img
+          class="w-full h-full object-cover grayscale opacity-80"
+          data-alt="cinematic close-up of a silver spinning top on a dark polished wooden surface with dramatic moody lighting and shallow depth of field"
+          src="https://lh3.googleusercontent.com/aida-public/AB6AXuAKgU3vBvsO88oZtarzB7gnjBurLvhVDDv1Sy8lucm3qIQqcj91br4ntHiAMYqZ-IAHL5sFnJhU0RhgZ_Z00g4Vf1dKhAqQYxkD_fF-jwcYopTnlgHx-mrtDhg8gW-jtwGo7kJOZZbAX11zE87DrgswjmzNTQHZxEqJJ-11iAq6i1RAOORsZOP-YgUyNN1ufA8yD0zdNv3YO7ezkFS-5OLI0DL3Fj1Tq6F7hD0s1srUwzi_L6-asoYMNneniVT6YpEOngc_s_n1O0k"
+        />
+        <div class="absolute bottom-0 left-0 w-full p-8 md:p-16 z-20">
+          <div class="max-w-7xl mx-auto space-y-6">
+            <h1
+              id="movie-title"
+              class="text-7xl md:text-9xl font-black tracking-tighter text-white leading-none"
+            >
+              Inception
+            </h1>
+            <div
+              class="flex flex-wrap items-center gap-6 text-zinc-400 text-sm font-medium tracking-tight"
+            >
+              <span>2010</span>
+              <span class="w-1 h-1 rounded-full bg-zinc-700"></span>
+              <span>Sci-Fi/Action</span>
+              <span class="w-1 h-1 rounded-full bg-zinc-700"></span>
+              <span>2h 28m</span>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- Content Grid -->
+      <section class="max-w-7xl mx-auto px-8 py-24">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-24">
+          <!-- Left Column: Details -->
+          <div class="lg:col-span-8 space-y-16">
+            <div class="space-y-4">
+              <label
+                class="text-[10px] uppercase tracking-[0.2em] text-zinc-500 font-bold"
+                >Synopsis</label
+              >
+              <p
+                class="text-2xl md:text-3xl text-on-surface leading-tight font-light max-w-3xl"
+              >
+                A professional thief who steals information by infiltrating the
+                subconscious of his targets is offered a chance to have his
+                criminal history erased as payment for the implantation of
+                another person's idea into a target's subconscious.
+              </p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 pt-12">
+              <div class="space-y-6">
+                <label
+                  class="text-[10px] uppercase tracking-[0.2em] text-zinc-500 font-bold"
+                  >Cast</label
+                >
+                <ul class="space-y-4">
+                  <li class="text-xl text-white font-medium">
+                    Leonardo DiCaprio
+                  </li>
+                  <li class="text-xl text-white font-medium">
+                    Joseph Gordon-Levitt
+                  </li>
+                  <li class="text-xl text-white font-medium">Elliot Page</li>
+                </ul>
+              </div>
+              <div class="space-y-6">
+                <label
+                  class="text-[10px] uppercase tracking-[0.2em] text-zinc-500 font-bold"
+                  >Director</label
+                >
+                <div class="text-xl text-white font-medium">
+                  Christopher Nolan
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Right Column: Recognition Meta & Actions -->
+          <div class="lg:col-span-4 space-y-8">
+            <div
+              class="bg-surface-container-low p-8 rounded-xl space-y-8 border border-white/10 hover:border-white/40 transition-all duration-300"
+            >
+              <div class="space-y-4">
+                <label
+                  class="text-[10px] uppercase tracking-[0.2em] text-zinc-500 font-bold"
+                  >Confidence</label
+                >
+                <div id="confidence" class="flex items-end gap-2">
+                  <span class="text-6xl font-black text-white leading-none"
+                    >70%</span
+                  >
+                  <span class="text-zinc-500 mb-1 font-semibold">Match</span>
+                </div>
+                <div
+                  class="w-full h-1 bg-outline-variant/20 rounded-full overflow-hidden"
+                >
+                  <div class="h-full bg-white w-[70%]"></div>
+                </div>
+              </div>
+              <div class="space-y-4">
+                <label
+                  class="text-[10px] uppercase tracking-[0.2em] text-zinc-500 font-bold"
+                  >Scene Identification</label
+                >
+                <div
+                  class="flex items-center justify-between text-white border-t border-white/5 pt-4"
+                >
+                  <span class="text-zinc-400">Timecode</span>
+                  <span class="font-mono font-bold">01:14:32</span>
+                </div>
+              </div>
+            </div>
+            <!-- <div class="grid grid-cols-2 gap-4">
+              <div
+                class="p-6 bg-surface-container-lowest border border-white/5 flex flex-col gap-4"
+              >
+                <span
+                  class="material-symbols-outlined text-zinc-500"
+                  data-icon="bookmark"
+                  >bookmark</span
+                >
+                <span
+                  class="text-[10px] uppercase tracking-widest font-bold text-white"
+                  >Save</span
+                >
+              </div>
+              <div
+                class="p-6 bg-surface-container-lowest border border-white/5 flex flex-col gap-4"
+              >
+                <span
+                  class="material-symbols-outlined text-zinc-500"
+                  data-icon="share"
+                  >share</span
+                >
+                <span
+                  class="text-[10px] uppercase tracking-widest font-bold text-white"
+                  >Share</span
+                >
+              </div>
+            </div> -->
+          </div>
+        </div>
+      </section>
+    </main>
+    <!-- Footer -->
+    <footer class="bg-black w-full py-10 px-8 border-t border-white/10">
+      <div
+        class="flex flex-col md:flex-row justify-between items-center gap-6 max-w-[1440px] mx-auto"
+      >
+        <a href="./code.html">
+          <div class="text-xs font-black tracking-tighter text-white">
+            ALAKAZAM
+          </div>
+        </a>
+        <div class="flex gap-8">
+          <a
+            class="font-['Inter'] text-xs font-medium text-on-surface-variant hover:text-white transition-colors"
+            href="https://github.com/AbhiSan2005/Alakazam"
+            style=""
+            target="_blank"
+            >GitHub</a
+          >
+        </div>
+      </div>
+    </footer>
+    <script src="./movie.js"></script>
+  </body>
+</html>
