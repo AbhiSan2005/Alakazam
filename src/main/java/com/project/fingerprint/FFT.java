@@ -1,6 +1,6 @@
 package com.project.fingerprint;
 
-public class FFT implements FingerprintStrategy{
+public class FFT {
 
     public static void fft(double[] real, double[] imag) {
         int n = real.length;
