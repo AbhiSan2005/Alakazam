@@ -18,27 +18,21 @@ public class AudioHelper {
 
     public void insertAudioHashes(List<FrameFingerprint> frames) {
         String sql = "INSERT INTO audio_hashes (movie_id, time_offset, hash_code) VALUES (?, ?, ?)";
-
         try (Connection conn = getConnection();
                 PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
             conn.setAutoCommit(false);
-
             int count = 0;
             for (FrameFingerprint frame : frames) {
                 pstmt.setString(1, frame.getVideoID());
                 pstmt.setInt(2, frame.getTimestamp());
                 pstmt.setLong(3, frame.getHash());
                 pstmt.addBatch();
-
                 if (++count % 10000 == 0)
                     pstmt.executeBatch();
             }
-
             pstmt.executeBatch();
             conn.commit();
             System.out.println("Successfully stored " + frames.size() + " audio hashes.");
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -46,7 +40,7 @@ public class AudioHelper {
 
     public MatchResult findBestMatch(List<FrameFingerprint> queryFrames) {
         if (queryFrames == null || queryFrames.isEmpty()) {
-            return new MatchResult("No Match Found", "Unknown", 0.0, 0, 0);
+            return new MatchResult("No Match Found", 0.0, 0, 0);
         }
 
         Map<Long, List<Integer>> queryHashMap = new HashMap<>();
@@ -60,10 +54,8 @@ public class AudioHelper {
 
         Map<String, Map<Integer, Integer>> histogram = new HashMap<>();
 
-        String sql = "SELECT m.movie_id, m.title, a.time_offset, a.hash_code " +
-                "FROM audio_hashes a " +
-                "JOIN movies m ON a.movie_id = m.movie_id " +
-                "WHERE a.hash_code = ANY(?)";
+
+        String sql = "SELECT movie_id, time_offset, hash_code FROM audio_hashes WHERE hash_code = ANY(?)";
 
         try (Connection conn = getConnection();
                 PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -74,18 +66,14 @@ public class AudioHelper {
             try (ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
                     String dbMovieId = rs.getString("movie_id");
-                    String dbMovieTitle = rs.getString("title");
                     int dbTime = rs.getInt("time_offset");
                     long dbHash = rs.getLong("hash_code");
-
-                    // Combine ID and Title to pass both through the histogram
-                    String mapKey = dbMovieId + "::" + dbMovieTitle;
 
                     List<Integer> queryTimes = queryHashMap.get(dbHash);
                     if (queryTimes != null) {
                         for (int qTime : queryTimes) {
                             int offset = dbTime - qTime;
-                            histogram.computeIfAbsent(mapKey, k -> new HashMap<>())
+                            histogram.computeIfAbsent(dbMovieId, k -> new HashMap<>())
                                     .merge(offset, 1, Integer::sum);
                         }
                     }
@@ -97,28 +85,23 @@ public class AudioHelper {
 
         int highestVotes = 0;
         String winningId = "No Match Found";
-        String winningTitle = "Unknown";
         int winningOffset = 0;
 
         for (Map.Entry<String, Map<Integer, Integer>> movieEntry : histogram.entrySet()) {
             for (Map.Entry<Integer, Integer> offsetEntry : movieEntry.getValue().entrySet()) {
                 if (offsetEntry.getValue() > highestVotes) {
                     highestVotes = offsetEntry.getValue();
-
-                    // Split the key back into ID and Title
-                    String[] parts = movieEntry.getKey().split("::");
-                    winningId = parts[0];
-                    winningTitle = parts[1];
+                    winningId = movieEntry.getKey();
                     winningOffset = offsetEntry.getKey();
                 }
             }
         }
 
-        if (highestVotes >= 15) {
+        if (highestVotes >= 15 && !winningId.equals("No Match Found")) {
             double confidence = Math.min((highestVotes / 50.0) * 100.0, 100.0);
-            return new MatchResult(winningId, winningTitle, confidence, highestVotes, winningOffset);
+            return new MatchResult(winningId, confidence, highestVotes, winningOffset);
         }
 
-        return new MatchResult("No Match Found", "Unknown", 0.0, 0, 0);
+        return new MatchResult("No Match Found", 0.0, 0, 0);
     }
 }

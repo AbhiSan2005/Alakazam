@@ -52,6 +52,6 @@ AudioRecognitionSystem/
 
 # Updates to make
 
-1) Top list of movies instead of a single match
-2) Different routes depending upon what the user has provided --> video, audio or both
-3) fix the pipelines to work for screen recordings
+1) Fix tables -- Remove chunk_id, add movie descriptions
+2) Exception Handling
+3) UML diagram

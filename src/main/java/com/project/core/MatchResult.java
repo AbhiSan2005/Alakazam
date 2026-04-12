@@ -2,14 +2,12 @@ package com.project.core;
 
 public class MatchResult {
     private String mediaId;
-    private String mediaTitle;
     private double confidence;
     private int matchedHashes;
     private int timeOffset;
 
-    public MatchResult(String mediaId, String mediaTitle, double confidence, int matchedHashes, int timeOffset) {
+    public MatchResult(String mediaId, double confidence, int matchedHashes, int timeOffset) {
         this.mediaId = mediaId;
-        this.mediaTitle = mediaTitle;
         this.confidence = confidence;
         this.matchedHashes = matchedHashes;
         this.timeOffset = timeOffset;
@@ -17,10 +15,6 @@ public class MatchResult {
 
     public String getMediaId() {
         return mediaId;
-    }
-
-    public String getMediaTitle() {
-        return mediaTitle;
     }
 
     public double getConfidence() {
@@ -36,6 +30,6 @@ public class MatchResult {
     }
 
     public boolean isMatch() {
-        return !mediaId.equals("No Match Found") && confidence > 0;
+        return mediaId != null && !mediaId.equals("No Match Found") && confidence > 0;
     }
 }

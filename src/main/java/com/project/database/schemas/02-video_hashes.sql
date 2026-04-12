@@ -3,7 +3,6 @@ CREATE TABLE IF NOT EXISTS video_hashes(
     movie_id VARCHAR(8) NOT NULL,
     frame_timestamp INT NOT NULL,
     phash BIGINT NOT NULL,
-    chunk_id INT NOT NULL,
 
     CONSTRAINT fk_movie
         FOREIGN KEY (movie_id)
