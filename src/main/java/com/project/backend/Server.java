@@ -1,7 +1,7 @@
 package com.project.backend;
 
 import java.util.Map;
-import com.project.backend.routes.VideoRoutes;
+import com.project.backend.routes.MediaRoutes;
 import io.javalin.Javalin;
 import java.util.TimeZone;
 
@@ -23,6 +23,6 @@ public class Server {
             ));
         });
 
-        VideoRoutes.registerRoutes(app);
+        MediaRoutes.registerRoutes(app);
     }
 }

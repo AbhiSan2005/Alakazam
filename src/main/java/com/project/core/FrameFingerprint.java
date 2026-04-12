@@ -29,13 +29,4 @@ public class FrameFingerprint{
         return chunkID;
     }
 
-    @Override
-    public String toString() {
-        return "FrameFingerprint{" +
-                "videoID='" + videoID + '\'' +
-                ", timestamp=" + timestamp +
-                ", hash=" + hash +
-                ", chunkID=" + chunkID +
-                '}';
-    }
 }

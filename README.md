@@ -48,3 +48,10 @@ AudioRecognitionSystem/
 ```
 │
 ├── README.md
+
+
+# Updates to make
+
+1) Fix tables -- Remove chunk_id, add movie descriptions
+2) Exception Handling
+3) UML diagram
