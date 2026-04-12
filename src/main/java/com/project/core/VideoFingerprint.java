@@ -12,6 +12,7 @@ public class VideoFingerprint extends Fingerprint{
         this.frames = frames;
     }
 
+    @Override
     public List<FrameFingerprint> getFrames() {
         return frames;
     }

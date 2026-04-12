@@ -19,6 +19,7 @@ public class AudioFingerprint extends Fingerprint {
         this.frames.add(frame);
     }
 
+    @Override
     public List<FrameFingerprint> getFrames() {
         return frames;
     }

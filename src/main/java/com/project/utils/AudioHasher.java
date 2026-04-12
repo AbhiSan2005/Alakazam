@@ -1,11 +1,11 @@
 package com.project.utils;
 
-import com.project.core.FrameFingerprint;
-import com.project.core.AudioFingerprint;
-import com.project.fingerprint.FFTStrategy;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import com.project.core.AudioFingerprint;
+import com.project.core.FrameFingerprint;
+import com.project.fingerprint.FFTStrategy;
 
 public class AudioHasher {
 
@@ -17,7 +17,6 @@ public class AudioHasher {
         List<int[]> constellationMap = new ArrayList<>();
         int offset = 0;
 
-        // 1. Sliding Window & FFT
         while (offset + WINDOW_SIZE < samples.length) {
             double[] real = new double[WINDOW_SIZE];
             double[] imag = new double[WINDOW_SIZE];
@@ -38,7 +37,6 @@ public class AudioHasher {
             offset += OVERLAP;
         }
 
-        // 2. Combinatorial Hashing
         List<FrameFingerprint> dbHashes = new ArrayList<>();
         int targetZoneSize = 5; 
 
@@ -67,7 +65,6 @@ public class AudioHasher {
             }
         }
         
-        // Return the properly named object
         return new AudioFingerprint(dbHashes);
     }
 
@@ -93,11 +90,4 @@ public class AudioHasher {
         return peaks;
     }
 
-    // private static int hash(int[] peaks) {
-    //     // compress peaks into single int
-    //     return peaks[0] * 100000
-    //          + peaks[1] * 1000
-    //          + peaks[2] * 10
-    //          + peaks[3];
-    // }
 }

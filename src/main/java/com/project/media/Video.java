@@ -2,16 +2,15 @@ package com.project.media;
 
 // import com.project.core.Fingerprint;
 // import com.project.core.FrameFingerprint;
+import java.io.File;
+
+import org.bytedeco.javacv.Frame;
+import org.bytedeco.javacv.FrameGrabber;
+
 import com.project.core.VideoFingerprint;
 import com.project.fingerprint.PHashStrategy;
 import com.project.utils.VideoFrameGrabber;
 import com.project.utils.VideoFrameHasher;
-import org.bytedeco.javacv.Frame;
-import org.bytedeco.javacv.FrameGrabber;
-
-import java.io.File;
-// import java.util.ArrayList;
-// import java.util.List;
 
 public class Video extends Media{
     private String videoId;

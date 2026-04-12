@@ -1,15 +1,15 @@
 package com.project.utils;
 
-import org.bytedeco.javacv.FFmpegFrameGrabber;
-import org.bytedeco.javacv.Frame;
-// import org.bytedeco.javacv.FrameGrabber;
-import org.bytedeco.javacv.Java2DFrameConverter;
-
-import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
+
+import javax.imageio.ImageIO;
+
+import org.bytedeco.javacv.FFmpegFrameGrabber;
+import org.bytedeco.javacv.Frame;
+import org.bytedeco.javacv.Java2DFrameConverter;
 
 //grab and save frames to image files
 public class VideoFrameGrabber implements Closeable {
@@ -94,7 +94,6 @@ public class VideoFrameGrabber implements Closeable {
     public void close() {
         try {
             if (grabber != null) {
-                // 1. Always try to stop if started
                 if (started) {
                     try {
                         grabber.stop();
@@ -102,13 +101,11 @@ public class VideoFrameGrabber implements Closeable {
                         System.err.println("Warning: Grabber stop failed: " + e.getMessage());
                     }
                 }
-                // 2. CRITICAL: Always release native handles regardless of 'started' state
                 grabber.release();
             }
         } catch (FFmpegFrameGrabber.Exception e) {
             System.err.println("Error releasing grabber: " + e.getMessage());
         } finally {
-            // 3. Reset state and allow GC to collect the object
             started = false;
         }
     }
