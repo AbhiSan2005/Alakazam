@@ -1,6 +1,6 @@
 package com.project.fingerprint;
 
-public class FFT {
+public class FFTStrategy {
 
     public static void fft(double[] real, double[] imag) {
         int n = real.length;

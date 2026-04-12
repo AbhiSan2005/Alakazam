@@ -1,6 +1,6 @@
 package com.project.fingerprint;
 
-import com.project.core.Fingerprint;
+// import com.project.core.Fingerprint;
 import com.project.core.FrameFingerprint;
 import com.project.core.VideoFingerprint;
 import com.project.media.Media;

@@ -2,7 +2,7 @@ package com.project.utils;
 
 import com.project.core.FrameFingerprint;
 import com.project.core.AudioFingerprint;
-import com.project.fingerprint.FFT;
+import com.project.fingerprint.FFTStrategy;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +27,7 @@ public class AudioHasher {
                 imag[i] = 0;
             }
 
-            FFT.fft(real, imag);
+            FFTStrategy.fft(real, imag);
 
             double[] magnitude = new double[WINDOW_SIZE / 2];
             for (int i = 0; i < magnitude.length; i++) {

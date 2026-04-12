@@ -1,6 +1,6 @@
 package com.project;
 
-import com.project.core.VideoFingerprint;
+// import com.project.core.VideoFingerprint;
 import com.project.media.Video;
 
 public class Main {
