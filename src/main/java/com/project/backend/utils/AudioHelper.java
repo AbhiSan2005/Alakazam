@@ -33,6 +33,12 @@ public class AudioHelper {
             pstmt.executeBatch();
             conn.commit();
             System.out.println("Successfully stored " + frames.size() + " audio hashes.");
+
+            try (Statement stmt = conn.createStatement()) {
+                System.out.println("Updating database statistics (ANALYZE)...");
+                stmt.execute("ANALYZE audio_hashes");
+            }
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -43,37 +49,55 @@ public class AudioHelper {
             return new MatchResult("No Match Found", 0.0, 0, 0);
         }
 
-        Map<Long, List<Integer>> queryHashMap = new HashMap<>();
-        long[] hashArray = new long[queryFrames.size()];
-        int idx = 0;
+        int targetPayloadSize = 400;
+        int step = Math.max(1, queryFrames.size() / targetPayloadSize);
 
-        for (FrameFingerprint f : queryFrames) {
-            queryHashMap.computeIfAbsent(f.getHash(), k -> new ArrayList<>()).add(f.getTimestamp());
-            hashArray[idx++] = f.getHash();
+        Map<Long, List<Integer>> queryHashMap = new HashMap<>();
+        List<Long> hashList = new ArrayList<>();
+
+        for (int i = 0; i < queryFrames.size(); i += step) {
+            FrameFingerprint f = queryFrames.get(i);
+            if (f.getHash() != 0L) {
+                queryHashMap.computeIfAbsent(f.getHash(), k -> new ArrayList<>()).add(f.getTimestamp());
+                hashList.add(f.getHash());
+            }
         }
+
+        if (hashList.isEmpty()) {
+            return new MatchResult("No Match Found", 0.0, 0, 0);
+        }
+
+        Long[] hashArray = hashList.toArray(new Long[0]);
+
+        String sql = "SELECT movie_id, time_offset, hash_code FROM audio_hashes WHERE hash_code = ANY(?::bigint[])";
 
         Map<String, Map<Integer, Integer>> histogram = new HashMap<>();
 
-        String sql = "SELECT movie_id, time_offset, hash_code FROM audio_hashes WHERE hash_code = ANY(?)";
+        try (Connection conn = getConnection()) {
 
-        try (Connection conn = getConnection();
-                PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            try (Statement stmt = conn.createStatement()) {
+                stmt.execute("SET enable_seqscan = off;");
+                stmt.execute("SET enable_hashjoin = off;");
+                stmt.execute("SET enable_mergejoin = off;");
+            }
 
-            Array sqlArray = conn.createArrayOf("bigint", Arrays.stream(hashArray).boxed().toArray(Long[]::new));
-            pstmt.setArray(1, sqlArray);
+            try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                pstmt.setArray(1, conn.createArrayOf("bigint", hashArray));
 
-            try (ResultSet rs = pstmt.executeQuery()) {
-                while (rs.next()) {
-                    String dbMovieId = rs.getString("movie_id");
-                    int dbTime = rs.getInt("time_offset");
-                    long dbHash = rs.getLong("hash_code");
+                try (ResultSet rs = pstmt.executeQuery()) {
+                    while (rs.next()) {
+                        String dbMovieId = rs.getString("movie_id");
+                        int dbTime = rs.getInt("time_offset");
+                        long dbHash = rs.getLong("hash_code");
 
-                    List<Integer> queryTimes = queryHashMap.get(dbHash);
-                    if (queryTimes != null) {
-                        for (int qTime : queryTimes) {
-                            int offset = dbTime - qTime;
-                            histogram.computeIfAbsent(dbMovieId, k -> new HashMap<>())
-                                    .merge(offset, 1, Integer::sum);
+                        List<Integer> queryTimes = queryHashMap.get(dbHash);
+                        if (queryTimes != null) {
+                            for (int qTime : queryTimes) {
+                                // Calculate the relative offset (db_time - query_time)
+                                int offset = dbTime - qTime;
+                                histogram.computeIfAbsent(dbMovieId, k -> new HashMap<>())
+                                        .merge(offset, 1, Integer::sum);
+                            }
                         }
                     }
                 }
