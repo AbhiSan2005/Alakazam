@@ -10,6 +10,7 @@ import com.project.backend.utils.VideoHelper;
 import com.project.backend.utils.MovieHelper;
 import com.project.media.Audio;
 import com.project.media.Video;
+import com.project.exceptions.*;
 import io.javalin.http.Context;
 import io.javalin.http.UploadedFile;
 
@@ -23,6 +24,9 @@ public class MediaController {
     private final MovieHelper movieDb = new MovieHelper();
     private final VideoHelper videoDb = new VideoHelper();
     private final AudioHelper audioDb = new AudioHelper();
+
+    // 15 MB limit explicitly for user query clips (~30 seconds)
+    private static final long MAX_FILE_SIZE_BYTES = 30_000_000;
 
     private boolean isAudioOnly(String filename) {
         String lower = filename.toLowerCase();
@@ -38,6 +42,10 @@ public class MediaController {
                 lower.endsWith(".wmv");
     }
 
+    private boolean isStandardVideo(String filename) {
+        return filename.toLowerCase().endsWith(".mp4");
+    }
+
     public void seedMedia(Context ctx) throws Exception {
         String title = ctx.formParam("title");
         String genre = ctx.formParam("genre");
@@ -48,6 +56,12 @@ public class MediaController {
         if (uploadedFile == null || title == null || genre == null || durationStr == null || yearStr == null) {
             ctx.status(400).result("Error: Missing media file or required metadata parameters.");
             return;
+        }
+
+        String filename = uploadedFile.filename();
+
+        if (!isAudioOnly(filename) && !isVideoOnly(filename) && !isStandardVideo(filename)) {
+            throw new UnsupportedMediaFormatException("The file format for '" + filename + "' is not supported.");
         }
 
         int duration = Integer.parseInt(durationStr);
@@ -62,7 +76,6 @@ public class MediaController {
         File tempFile = File.createTempFile("seed_media_", uploadedFile.extension());
         Files.copy(uploadedFile.content(), tempFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
 
-        String filename = uploadedFile.filename();
         boolean audioOnly = isAudioOnly(filename);
         boolean videoOnly = isVideoOnly(filename);
 
@@ -88,9 +101,6 @@ public class MediaController {
             CompletableFuture.allOf(videoTask, audioTask).join();
             ctx.status(201).result("Successfully seeded media for: " + title + " (ID: " + masterMovieId + ")");
 
-        } catch (Exception e) {
-            ctx.status(500).result("Error during media processing: " + e.getMessage());
-            e.printStackTrace();
         } finally {
             System.gc();
             if (tempFile.exists())
@@ -106,10 +116,21 @@ public class MediaController {
             return;
         }
 
+        // DURATION/SIZE CHECK
+        if (uploadedFile.size() > MAX_FILE_SIZE_BYTES) {
+            throw new MediaDurationExceededException(
+                    "Clip exceeds the maximum allowed size limit. Please trim to 30 MB or less.");
+        }
+
+        String filename = uploadedFile.filename();
+
+        if (!isAudioOnly(filename) && !isVideoOnly(filename) && !isStandardVideo(filename)) {
+            throw new UnsupportedMediaFormatException("The file format for '" + filename + "' is not supported.");
+        }
+
         File tempFile = File.createTempFile("query_media_", uploadedFile.extension());
         Files.copy(uploadedFile.content(), tempFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
 
-        String filename = uploadedFile.filename();
         boolean audioOnly = isAudioOnly(filename);
         boolean videoOnly = isVideoOnly(filename);
 
@@ -140,9 +161,6 @@ public class MediaController {
 
             ctx.json(finalResponse);
 
-        } catch (Exception e) {
-            ctx.status(500).result("Error during media matching: " + e.getMessage());
-            e.printStackTrace();
         } finally {
             System.gc();
             if (tempFile.exists())
