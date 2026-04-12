@@ -4,6 +4,7 @@ const statusText = document.getElementById("status");
 const titleEl = document.getElementById("movie-title");
 const audioConfidenceEl = document.getElementById("audio-confidence");
 const videoConfidenceEl = document.getElementById("video-confidence");
+const movieInfoEl = document.getElementById("movie-info");
 
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
@@ -44,6 +45,8 @@ form.addEventListener("submit", async (e) => {
     audioConfidenceEl.innerText = audioConfidence + "%";
     const videoConfidence = Math.round(data.videoDetails.confidence);
     videoConfidenceEl.innerText = videoConfidence + "%";
+    movieInfoEl.innerText =
+      data.yearOfRelease + " • " + data.genre + " • " + data.duration + "m";
   } catch (err) {
     console.error(err);
     statusText.innerText = "Upload failed!";
