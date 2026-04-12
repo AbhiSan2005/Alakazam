@@ -45,14 +45,12 @@ public class VideoFrameGrabber implements Closeable {
             return null;
         }
 
-        // Convert to BufferedImage BEFORE release — safe to pass around
         return frame;
     }
 
     // grab first frame of a video and returns a converted image
     public BufferedImage grabFrameToImage() throws FFmpegFrameGrabber.Exception {
 
-        // Convert to BufferedImage BEFORE release — safe to pass around
         return converter.getBufferedImage(grabFrame());
     }
 
@@ -94,7 +92,6 @@ public class VideoFrameGrabber implements Closeable {
     public void close() {
         try {
             if (grabber != null) {
-                // 1. Always try to stop if started
                 if (started) {
                     try {
                         grabber.stop();
@@ -102,13 +99,11 @@ public class VideoFrameGrabber implements Closeable {
                         System.err.println("Warning: Grabber stop failed: " + e.getMessage());
                     }
                 }
-                // 2. CRITICAL: Always release native handles regardless of 'started' state
                 grabber.release();
             }
         } catch (FFmpegFrameGrabber.Exception e) {
             System.err.println("Error releasing grabber: " + e.getMessage());
         } finally {
-            // 3. Reset state and allow GC to collect the object
             started = false;
         }
     }
