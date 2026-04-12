@@ -1,20 +1,20 @@
 package com.project.core;
 
 public class FrameFingerprint{
-    private final String videoID;
+    private final String mediaID;
     private final int timestamp;
     private final long hash;
     private final int chunkID;
 
-    public FrameFingerprint(String videoID, int timestamp, long hash, int chunkID) {
-        this.videoID = videoID;
+    public FrameFingerprint(String mediaID, int timestamp, long hash, int chunkID) {
+        this.mediaID = mediaID;
         this.timestamp = timestamp;
         this.hash = hash;
         this.chunkID = chunkID;
     }
 
-    public String getVideoID() {
-        return videoID;
+    public String getMediaID() {
+        return mediaID;
     }
 
     public int getTimestamp() {
@@ -32,7 +32,7 @@ public class FrameFingerprint{
     @Override
     public String toString() {
         return "FrameFingerprint{" +
-                "videoID='" + videoID + '\'' +
+                "mediaID='" + mediaID + '\'' +
                 ", timestamp=" + timestamp +
                 ", hash=" + hash +
                 ", chunkID=" + chunkID +

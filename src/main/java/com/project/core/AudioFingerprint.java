@@ -1,21 +1,25 @@
 package com.project.core;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class AudioFingerprint extends Fingerprint {
 
-    // hash -> list of time offsets
-    private Map<Integer, List<Integer>> hashMap;
+    private List<FrameFingerprint> frames;
 
     public AudioFingerprint() {
-        this.hashMap = new HashMap<>();
+        this.frames = new ArrayList<>();
     }
 
-    public void addHash(int hash, int timeOffset) {
-        hashMap.computeIfAbsent(hash, k -> new ArrayList<>()).add(timeOffset);
+    public AudioFingerprint(List<FrameFingerprint> frames) {
+        this.frames = frames;
     }
 
-    public Map<Integer, List<Integer>> getHashMap() {
-        return hashMap;
+    public void addHash(FrameFingerprint frame) {
+        this.frames.add(frame);
+    }
+
+    public List<FrameFingerprint> getFrames() {
+        return frames;
     }
 }

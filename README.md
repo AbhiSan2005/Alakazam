@@ -48,3 +48,12 @@ AudioRecognitionSystem/
 ```
 │
 ├── README.md
+
+# Files to discard
+1) AudioReader.java --> Replaced with AudioFrameGrabber
+
+# Files Changed
+2) AudioFingerPrint.java
+3) AudioHasher.java
+4) Audio.java
+
