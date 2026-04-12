@@ -19,25 +19,22 @@ public class VideoHelper {
     }
 
     public void insertVideoHashes(List<FrameFingerprint> frames) {
-        String sql = "INSERT INTO video_hashes (movie_id, frame_timestamp, phash, chunk_id) VALUES (?, ?, ?, ?)";
-
+        String sql = "INSERT INTO video_hashes (movie_id, frame_timestamp, phash) VALUES (?, ?, ?)";
         try (Connection conn = getConnection();
                 PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
             conn.setAutoCommit(false);
-
+            int count = 0;
             for (FrameFingerprint frame : frames) {
                 pstmt.setString(1, frame.getVideoID());
                 pstmt.setInt(2, frame.getTimestamp());
                 pstmt.setLong(3, frame.getHash());
-                pstmt.setInt(4, frame.getChunkID());
                 pstmt.addBatch();
+                if (++count % 10000 == 0)
+                    pstmt.executeBatch();
             }
-
             pstmt.executeBatch();
             conn.commit();
-            System.out.println("Successfully stored " + frames.size() + " hashes.");
-
+            System.out.println("Successfully stored " + frames.size() + " video hashes.");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -45,14 +42,12 @@ public class VideoHelper {
 
     public MatchResult findBestMatch(List<FrameFingerprint> queryFrames) {
         if (queryFrames == null || queryFrames.isEmpty()) {
-            return new MatchResult("No Match Found", "Unknown", 0.0, 0, 0);
+            return new MatchResult("No Match Found", 0.0, 0, 0);
         }
 
         Map<String, Integer> sequenceVotes = new HashMap<>();
 
-        String sql = "SELECT m.movie_id, m.title, v.frame_timestamp FROM video_hashes v " +
-                "JOIN movies m ON v.movie_id = m.movie_id " +
-                "WHERE bit_count((v.phash # ?)::bit(64)) <= 10";
+        String sql = "SELECT movie_id, frame_timestamp FROM video_hashes WHERE bit_count((phash # ?)::bit(64)) <= 15";
 
         try (Connection conn = getConnection();
                 PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -63,13 +58,10 @@ public class VideoHelper {
                 try (ResultSet rs = pstmt.executeQuery()) {
                     while (rs.next()) {
                         String dbMovieId = rs.getString("movie_id");
-                        String dbMovieTitle = rs.getString("title");
                         int dbFrame = rs.getInt("frame_timestamp");
-
                         int offset = dbFrame - queryFrame.getTimestamp();
-                        // Combine ID, Title, and Offset into the voting key
-                        String voteKey = dbMovieId + "::" + dbMovieTitle + "::" + offset;
 
+                        String voteKey = dbMovieId + "::" + offset;
                         sequenceVotes.put(voteKey, sequenceVotes.getOrDefault(voteKey, 0) + 1);
                     }
                 }
@@ -77,30 +69,25 @@ public class VideoHelper {
 
             int highestVotes = 0;
             String winningId = "No Match Found";
-            String winningTitle = "Unknown";
             int winningOffset = 0;
 
             for (Map.Entry<String, Integer> entry : sequenceVotes.entrySet()) {
                 if (entry.getValue() > highestVotes) {
                     highestVotes = entry.getValue();
-
-                    // Split the key back into its three parts
                     String[] parts = entry.getKey().split("::");
                     winningId = parts[0];
-                    winningTitle = parts[1];
-                    winningOffset = Integer.parseInt(parts[2]);
+                    winningOffset = Integer.parseInt(parts[1]);
                 }
             }
 
-            if (highestVotes >= 3) {
+            if (highestVotes >= 3 && !winningId.equals("No Match Found")) {
                 double confidence = ((double) highestVotes / queryFrames.size()) * 100.0;
-                return new MatchResult(winningId, winningTitle, Math.min(confidence, 100.0), highestVotes,
-                        winningOffset);
+                return new MatchResult(winningId, Math.min(confidence, 100.0), highestVotes, winningOffset);
             }
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return new MatchResult("No Match Found", "Unknown", 0.0, 0, 0);
+        return new MatchResult("No Match Found", 0.0, 0, 0);
     }
 }
