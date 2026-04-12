@@ -1,6 +1,8 @@
 package com.project.fingerprint;
+import com.project.core.AudioFingerprint;
+import com.project.media.Media;
 
-public class FFTStrategy {
+public class FFTStrategy implements FingerprintStrategy{
 
     public static void fft(double[] real, double[] imag) {
         int n = real.length;
@@ -42,5 +44,9 @@ public class FFTStrategy {
             real[k + n / 2] = evenReal[k] - treal;
             imag[k + n / 2] = evenImag[k] - timag;
         }
+    }
+
+    public AudioFingerprint generate(Media samples){
+        return new AudioFingerprint();
     }
 }
