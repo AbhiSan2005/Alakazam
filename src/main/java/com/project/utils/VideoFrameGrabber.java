@@ -45,14 +45,12 @@ public class VideoFrameGrabber implements Closeable {
             return null;
         }
 
-        // Convert to BufferedImage BEFORE release — safe to pass around
         return frame;
     }
 
     // grab first frame of a video and returns a converted image
     public BufferedImage grabFrameToImage() throws FFmpegFrameGrabber.Exception {
 
-        // Convert to BufferedImage BEFORE release — safe to pass around
         return converter.getBufferedImage(grabFrame());
     }
 
