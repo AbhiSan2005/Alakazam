@@ -25,7 +25,6 @@ public class MediaController {
     private final VideoHelper videoDb = new VideoHelper();
     private final AudioHelper audioDb = new AudioHelper();
 
-    // 15 MB limit explicitly for user query clips (~30 seconds)
     private static final long MAX_FILE_SIZE_BYTES = 30_000_000;
 
     private boolean isAudioOnly(String filename) {

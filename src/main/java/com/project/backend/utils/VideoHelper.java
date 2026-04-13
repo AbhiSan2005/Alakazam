@@ -45,14 +45,17 @@ public class VideoHelper {
             return new MatchResult("No Match Found", 0.0, 0, 0);
         }
 
-        Map<String, Integer> sequenceVotes = new HashMap<>();
+        int targetCount = 15;
+        int step = Math.max(1, queryFrames.size() / targetCount);
 
+        Map<String, Integer> sequenceVotes = new HashMap<>();
         String sql = "SELECT movie_id, frame_timestamp FROM video_hashes WHERE bit_count((phash # ?)::bit(64)) <= 15";
 
         try (Connection conn = getConnection();
                 PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
-            for (FrameFingerprint queryFrame : queryFrames) {
+            for (int i = 0; i < queryFrames.size(); i += step) {
+                FrameFingerprint queryFrame = queryFrames.get(i);
                 pstmt.setLong(1, queryFrame.getHash());
 
                 try (ResultSet rs = pstmt.executeQuery()) {
@@ -65,6 +68,9 @@ public class VideoHelper {
                         sequenceVotes.put(voteKey, sequenceVotes.getOrDefault(voteKey, 0) + 1);
                     }
                 }
+
+                if (i / step >= targetCount - 1)
+                    break;
             }
 
             int highestVotes = 0;
@@ -81,7 +87,7 @@ public class VideoHelper {
             }
 
             if (highestVotes >= 3 && !winningId.equals("No Match Found")) {
-                double confidence = ((double) highestVotes / queryFrames.size()) * 100.0;
+                double confidence = ((double) highestVotes / targetCount) * 100.0;
                 return new MatchResult(winningId, Math.min(confidence, 100.0), highestVotes, winningOffset);
             }
 

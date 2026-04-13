@@ -12,7 +12,7 @@ public class Server {
 
         Javalin app = Javalin.create(config -> {
             config.bundledPlugins.enableCors(cors -> cors.addRule(it -> it.anyHost()));
-            config.http.maxRequestSize = 500_000_000L; // 500MB allowance for admin seeding
+            config.http.maxRequestSize = 500_000_000L;
         }).start(8000);
 
         System.out.println("Server started on port 8000");
