@@ -22,26 +22,33 @@ public class UnifiedMatchResponse {
     }
 
     private void evaluateConsensus(MatchResult audio, MatchResult video) {
-        boolean audioMatched = audio.isMatch();
-        boolean videoMatched = video.isMatch();
+        
+        boolean isValidAudio = audio.isMatch() && audio.getConfidence() >= 50.0;
+        boolean isValidVideo = video.isMatch() && video.getConfidence() >= 40.0;
 
-        if (audioMatched && videoMatched && audio.getMediaId().equals(video.getMediaId())) {
+        if (isValidAudio && isValidVideo && audio.getMediaId().equals(video.getMediaId())) {
             this.mediaId = audio.getMediaId();
             this.isCrossVerified = true;
             this.statusMessage = "Absolute Match: Both Audio and Video independently verified this media.";
-        } else if (audioMatched) {
+        } else if (isValidAudio) {
             this.mediaId = audio.getMediaId();
             this.isCrossVerified = false;
-            this.statusMessage = "Partial Match: Identified via Audio fingerprinting. Video was inconclusive.";
-        } else if (videoMatched) {
+            this.statusMessage = "Partial Match: Identified via Audio fingerprinting. Video was inconclusive or low confidence.";
+            if (!isValidVideo)
+                this.videoDetails.match = false;
+        } else if (isValidVideo) {
             this.mediaId = video.getMediaId();
             this.isCrossVerified = false;
-            this.statusMessage = "Partial Match: Identified via Video fingerprinting. Audio was inconclusive.";
+            this.statusMessage = "Partial Match: Identified via Video fingerprinting. Audio was inconclusive or low confidence.";
+            if (!isValidAudio)
+                this.audioDetails.match = false;
         } else {
             this.mediaId = "No Match Found";
             this.finalDecision = "No Match Found";
             this.isCrossVerified = false;
-            this.statusMessage = "Mismatch: Neither pipeline could identify this clip.";
+            this.statusMessage = "Mismatch: The clip did not meet the minimum confidence thresholds to be considered a match.";
+            this.audioDetails.match = false;
+            this.videoDetails.match = false;
         }
     }
 
