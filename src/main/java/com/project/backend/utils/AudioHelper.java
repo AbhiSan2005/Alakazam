@@ -8,15 +8,15 @@ import java.util.*;
 
 public class AudioHelper {
 
-    private final String URL = "jdbc:postgresql://localhost:5433/alakazam_db";
-    private final String USER = "alakazam";
-    private final String PASSWORD = "alakazam";
+    private static final String URL = "jdbc:postgresql://localhost:5433/alakazam_db";
+    private static final String USER = "alakazam";
+    private static final String PASSWORD = "alakazam";
 
-    private Connection getConnection() throws SQLException {
+    private static Connection getConnection() throws SQLException {
         return DriverManager.getConnection(URL, USER, PASSWORD);
     }
 
-    public void insertAudioHashes(List<FrameFingerprint> frames) {
+    public static void insertAudioHashes(List<FrameFingerprint> frames) {
         String sql = "INSERT INTO audio_hashes (movie_id, time_offset, hash_code) VALUES (?, ?, ?)";
         try (Connection conn = getConnection();
                 PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -44,7 +44,7 @@ public class AudioHelper {
         }
     }
 
-    public MatchResult findBestMatch(List<FrameFingerprint> queryFrames) {
+    public static MatchResult findBestMatch(List<FrameFingerprint> queryFrames) {
         if (queryFrames == null || queryFrames.isEmpty()) {
             return new MatchResult("No Match Found", 0.0, 0, 0);
         }
@@ -93,7 +93,6 @@ public class AudioHelper {
                         List<Integer> queryTimes = queryHashMap.get(dbHash);
                         if (queryTimes != null) {
                             for (int qTime : queryTimes) {
-                                // Calculate the relative offset (db_time - query_time)
                                 int offset = dbTime - qTime;
                                 histogram.computeIfAbsent(dbMovieId, k -> new HashMap<>())
                                         .merge(offset, 1, Integer::sum);

@@ -9,16 +9,16 @@ import java.util.List;
 import java.util.Map;
 
 public class VideoHelper {
+    
+    private static final String URL = "jdbc:postgresql://localhost:5433/alakazam_db";
+    private static final String USER = "alakazam";
+    private static final String PASSWORD = "alakazam";
 
-    private final String URL = "jdbc:postgresql://localhost:5433/alakazam_db";
-    private final String USER = "alakazam";
-    private final String PASSWORD = "alakazam";
-
-    private Connection getConnection() throws SQLException {
+    private static Connection getConnection() throws SQLException {
         return DriverManager.getConnection(URL, USER, PASSWORD);
     }
 
-    public void insertVideoHashes(List<FrameFingerprint> frames) {
+    public static void insertVideoHashes(List<FrameFingerprint> frames) {
         String sql = "INSERT INTO video_hashes (movie_id, frame_timestamp, phash) VALUES (?, ?, ?)";
         try (Connection conn = getConnection();
                 PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -40,7 +40,7 @@ public class VideoHelper {
         }
     }
 
-    public MatchResult findBestMatch(List<FrameFingerprint> queryFrames) {
+    public static MatchResult findBestMatch(List<FrameFingerprint> queryFrames) {
         if (queryFrames == null || queryFrames.isEmpty()) {
             return new MatchResult("No Match Found", 0.0, 0, 0);
         }

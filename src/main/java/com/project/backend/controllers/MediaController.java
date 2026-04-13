@@ -21,10 +21,6 @@ import java.util.concurrent.CompletableFuture;
 
 public class MediaController {
 
-    private final MovieHelper movieDb = new MovieHelper();
-    private final VideoHelper videoDb = new VideoHelper();
-    private final AudioHelper audioDb = new AudioHelper();
-
     private static final long MAX_FILE_SIZE_BYTES = 30_000_000;
 
     private boolean isAudioOnly(String filename) {
@@ -66,7 +62,7 @@ public class MediaController {
         int duration = Integer.parseInt(durationStr);
         int yearOfRelease = Integer.parseInt(yearStr);
 
-        String masterMovieId = movieDb.insertMovieAndGetId(title, genre, duration, yearOfRelease);
+        String masterMovieId = MovieHelper.insertMovieAndGetId(title, genre, duration, yearOfRelease);
         if (masterMovieId == null) {
             ctx.status(500).result("Error: Could not generate Movie ID in database.");
             return;
@@ -86,7 +82,7 @@ public class MediaController {
                     : CompletableFuture.runAsync(() -> {
                         Video video = new Video(masterMovieId, title, tempFile);
                         VideoFingerprint vFingerprint = video.generateFingerprint();
-                        videoDb.insertVideoHashes(vFingerprint.getFrames());
+                        VideoHelper.insertVideoHashes(vFingerprint.getFrames());
                     });
 
             CompletableFuture<Void> audioTask = videoOnly
@@ -94,7 +90,7 @@ public class MediaController {
                     : CompletableFuture.runAsync(() -> {
                         Audio audio = new Audio(masterMovieId, title, tempFile);
                         AudioFingerprint aFingerprint = audio.generateFingerprint();
-                        audioDb.insertAudioHashes(aFingerprint.getFrames());
+                        AudioHelper.insertAudioHashes(aFingerprint.getFrames());
                     });
 
             CompletableFuture.allOf(videoTask, audioTask).join();
@@ -138,14 +134,14 @@ public class MediaController {
                     ? CompletableFuture.completedFuture(new MatchResult("No Match Found", 0.0, 0, 0))
                     : CompletableFuture.supplyAsync(() -> {
                         Audio queryAudio = new Audio("query", "User Clip", tempFile);
-                        return audioDb.findBestMatch(queryAudio.generateFingerprint().getFrames());
+                        return AudioHelper.findBestMatch(queryAudio.generateFingerprint().getFrames());
                     });
 
             CompletableFuture<MatchResult> videoMatchTask = audioOnly
                     ? CompletableFuture.completedFuture(new MatchResult("No Match Found", 0.0, 0, 0))
                     : CompletableFuture.supplyAsync(() -> {
                         Video queryVideo = new Video("query", "User Clip", tempFile);
-                        return videoDb.findBestMatch(queryVideo.generateFingerprint().getFrames());
+                        return VideoHelper.findBestMatch(queryVideo.generateFingerprint().getFrames());
                     });
 
             MatchResult audioResult = audioMatchTask.join();
@@ -154,7 +150,7 @@ public class MediaController {
             UnifiedMatchResponse finalResponse = new UnifiedMatchResponse(audioResult, videoResult);
 
             if (!finalResponse.mediaId.equals("No Match Found")) {
-                MovieMetaData meta = movieDb.getMovieDetails(finalResponse.mediaId);
+                MovieMetaData meta = MovieHelper.getMovieDetails(finalResponse.mediaId);
                 finalResponse.applyMetadata(meta);
             }
 

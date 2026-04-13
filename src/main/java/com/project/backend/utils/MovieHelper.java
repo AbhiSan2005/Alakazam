@@ -4,15 +4,16 @@ import com.project.core.MovieMetaData;
 import java.sql.*;
 
 public class MovieHelper {
-    private final String URL = "jdbc:postgresql://localhost:5433/alakazam_db";
-    private final String USER = "alakazam";
-    private final String PASSWORD = "alakazam";
+    
+    private static final String URL = "jdbc:postgresql://localhost:5433/alakazam_db";
+    private static final String USER = "alakazam";
+    private static final String PASSWORD = "alakazam";
 
-    private Connection getConnection() throws SQLException {
+    private static Connection getConnection() throws SQLException {
         return DriverManager.getConnection(URL, USER, PASSWORD);
     }
 
-    public String insertMovieAndGetId(String title, String genre, int duration, int yearOfRelease) {
+    public static String insertMovieAndGetId(String title, String genre, int duration, int yearOfRelease) {
         String sql = "INSERT INTO movies (title, genre, duration, year_of_release) VALUES (?, ?, ?, ?) RETURNING movie_id";
         try (Connection conn = getConnection();
                 PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -30,7 +31,7 @@ public class MovieHelper {
         return null;
     }
 
-    public MovieMetaData getMovieDetails(String movieId) {
+    public static MovieMetaData getMovieDetails(String movieId) {
         String sql = "SELECT title, genre, duration, year_of_release FROM movies WHERE movie_id = ?";
         try (Connection conn = getConnection();
                 PreparedStatement pstmt = conn.prepareStatement(sql)) {

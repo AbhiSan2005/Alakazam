@@ -1,13 +1,17 @@
 package com.project.fingerprint;
+
 import com.project.core.AudioFingerprint;
 import com.project.media.Media;
+import com.project.utils.AudioFrameGrabber;
+import com.project.utils.AudioHasher;
 
-public class FFTStrategy implements FingerprintStrategy{
+public class FFTStrategy implements FingerprintStrategy {
 
     public static void fft(double[] real, double[] imag) {
         int n = real.length;
 
-        if (n == 1) return;
+        if (n == 1)
+            return;
 
         if ((n & (n - 1)) != 0) {
             throw new IllegalArgumentException("Size must be power of 2");
@@ -46,7 +50,18 @@ public class FFTStrategy implements FingerprintStrategy{
         }
     }
 
-    public AudioFingerprint generate(Media samples){
-        return new AudioFingerprint();
+    @Override
+    public AudioFingerprint generate(Media media) {
+        try (AudioFrameGrabber grabber = new AudioFrameGrabber(media.getFile())) {
+
+            double[] samples = grabber.extractAllSamples();
+
+            return AudioHasher.generate(media.getId(), samples);
+
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to generate audio fingerprint", e);
+        } finally {
+            org.bytedeco.javacpp.Pointer.deallocateReferences();
+        }
     }
 }

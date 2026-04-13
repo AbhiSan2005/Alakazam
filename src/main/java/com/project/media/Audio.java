@@ -1,8 +1,7 @@
 package com.project.media;
 
 import com.project.core.AudioFingerprint;
-import com.project.utils.AudioFrameGrabber;
-import com.project.utils.AudioHasher;
+import com.project.fingerprint.FFTStrategy;
 
 import java.io.File;
 
@@ -18,17 +17,7 @@ public class Audio extends Media {
 
     @Override
     public AudioFingerprint generateFingerprint() {
-        try (AudioFrameGrabber grabber = new AudioFrameGrabber(getFile())) {
-            
-
-            double[] samples = grabber.extractAllSamples();
-            
-            return AudioHasher.generate(getId(), samples);
-            
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to generate audio fingerprint", e);
-        } finally {
-            org.bytedeco.javacpp.Pointer.deallocateReferences();
-        }
+        var strategy = new FFTStrategy();
+        return strategy.generate(this);
     }
 }
