@@ -65,10 +65,10 @@ src/main/java/com/project/
 
 ## Tech Stack
 
-| Technology | Details |
-|---|---|
-| Language | Java 15 |
-| Build Tool | Maven |
+| Technology        | Details                           |
+| ----------------- | --------------------------------- |
+| Language          | Java 15                           |
+| Build Tool        | Maven                             |
 | Signal Processing | JavaCV (`javacv-platform 1.5.10`) |
 
 ---
@@ -100,13 +100,13 @@ mvn exec:java -Dexec.mainClass="com.project.Main"
 
 ## OOP Concepts Demonstrated
 
-| Concept | Where Used |
-|---|---|
-| **Inheritance** | `Media` → `Audio`, `Video` |
-| **Abstraction** | `Fingerprintable`, `FingerprintStrategy`, `MatchStrategy` interfaces |
-| **Polymorphism** | Swappable fingerprinting & matching strategies |
-| **Encapsulation** | `Fingerprint`, `MatchResult`, `MediaDatabase` |
-| **Exception Handling** | Custom exceptions in the `exceptions` package |
+| Concept                | Where Used                                                           |
+| ---------------------- | -------------------------------------------------------------------- |
+| **Inheritance**        | `Media` → `Audio`, `Video`                                           |
+| **Abstraction**        | `Fingerprintable`, `FingerprintStrategy`, `MatchStrategy` interfaces |
+| **Polymorphism**       | Swappable fingerprinting & matching strategies                       |
+| **Encapsulation**      | `Fingerprint`, `MatchResult`, `MediaDatabase`                        |
+| **Exception Handling** | Custom exceptions in the `exceptions` package                        |
 
 ---
 

@@ -1,15 +1,15 @@
 package com.project.utils;
 
-import org.bytedeco.javacv.FFmpegFrameGrabber;
-import org.bytedeco.javacv.Frame;
-import org.bytedeco.javacv.FrameGrabber;
-import org.bytedeco.javacv.Java2DFrameConverter;
-
-import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
+
+import javax.imageio.ImageIO;
+
+import org.bytedeco.javacv.FFmpegFrameGrabber;
+import org.bytedeco.javacv.Frame;
+import org.bytedeco.javacv.Java2DFrameConverter;
 
 //grab and save frames to image files
 public class VideoFrameGrabber implements Closeable {
@@ -31,10 +31,12 @@ public class VideoFrameGrabber implements Closeable {
             started = true;
         }
     }
+
     public long getLengthInTime() throws FFmpegFrameGrabber.Exception {
         start();
         return grabber.getLengthInTime();
     }
+
     public Frame grabFrame() throws FFmpegFrameGrabber.Exception {
         start();
         Frame frame = grabber.grabImage();
@@ -43,18 +45,16 @@ public class VideoFrameGrabber implements Closeable {
             return null;
         }
 
-        // Convert to BufferedImage BEFORE release — safe to pass around
         return frame;
     }
 
-    //grab first frame of a video and returns a converted image
+    // grab first frame of a video and returns a converted image
     public BufferedImage grabFrameToImage() throws FFmpegFrameGrabber.Exception {
 
-        // Convert to BufferedImage BEFORE release — safe to pass around
         return converter.getBufferedImage(grabFrame());
     }
 
-    //grab the frame at a certain timestamp (in microseconds)
+    // grab the frame at a certain timestamp (in microseconds)
     public Frame grabFrameAtTimestamp(long timestamp) throws FFmpegFrameGrabber.Exception {
         start();
 
@@ -67,12 +67,13 @@ public class VideoFrameGrabber implements Closeable {
         return frame;
     }
 
-    //grab the frame at a certain timestamp (in microseconds) and returns a converted image
+    // grab the frame at a certain timestamp (in microseconds) and returns a
+    // converted image
     public BufferedImage grabFrameAtTimestampToImage(long timestamp) throws FFmpegFrameGrabber.Exception {
         return converter.getBufferedImage(grabFrameAtTimestamp(timestamp));
     }
 
-    //saves the frame that is converted to image
+    // saves the frame that is converted to image
     public void saveImage(BufferedImage image, String outputPath) {
         if (image == null) {
             System.err.println("Cannot save — image is null.");
@@ -90,13 +91,20 @@ public class VideoFrameGrabber implements Closeable {
     @Override
     public void close() {
         try {
-            if (started) {
-                grabber.stop();
+            if (grabber != null) {
+                if (started) {
+                    try {
+                        grabber.stop();
+                    } catch (FFmpegFrameGrabber.Exception e) {
+                        System.err.println("Warning: Grabber stop failed: " + e.getMessage());
+                    }
+                }
                 grabber.release();
-                started = false;
             }
         } catch (FFmpegFrameGrabber.Exception e) {
-            e.printStackTrace();
+            System.err.println("Error releasing grabber: " + e.getMessage());
+        } finally {
+            started = false;
         }
     }
 }

@@ -39,5 +39,4 @@ public class VideoFrameHasher {
         }
         return result;
     }
-
 }
