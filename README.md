@@ -58,7 +58,7 @@ src/main/java/com/project/
 │   ├── AudioReader.java              # Reads audio input from files
 │   └── FFTUtil.java                  # FFT computation utilities
 │
-└── Main.java                         # Entry point
+└── Server.java                         # Entry point
 ```
 
 ---
@@ -89,12 +89,25 @@ mvn clean install
 ```
 
 ### Run
+1. Open Docker Desktop
+Go to root directory ./Alakazam
 
+2. Run this command
 ```bash
-mvn exec:java -Dexec.mainClass="com.project.Main"
+docker compose up -d
+```
+3. Go to Server.java in Backend folder 
+Run the server.java file
+
+4. If you want to reset the database
+```bash
+docker compose down -v
 ```
 
-> **Note:** The exec-maven-plugin config is currently commented out in `pom.xml`. You can run `Main.java` directly from your IDE.
+5. Then again run 
+```bash
+docker compose up -d
+```
 
 ---
 
